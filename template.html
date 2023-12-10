@@ -10,14 +10,14 @@
     <h2>Activity Information</h2>
     <label>Title: <input type="text" id="title"></label>
     <br/><br/>
-  
-    <label>Description: <input type="text" id="description" /></label>
-    <br/><br/>
 
     <label>Date: <input type="date" id="date" /></label>
     <br/><br/>
 
     <label>Link: <input type="text" id="link" /></label>
+    <br/><br/>
+      
+    <label>Description: <textarea id="description" cols="30" rows="3"></textarea></label>
     <br/><br/>
 
     <input type="file" id="file" accept=".kml" onchange="renderKMLdata()">
@@ -150,7 +150,48 @@
     }
 
     function save() {
-      console.log('sdf')
+      const data = {
+        activity_title: document.querySelector('#title').value,
+        activity_description: document.querySelector('#description').value,
+        activity_date: document.querySelector('#date').value,
+        activity_link: document.querySelector('#link').value,
+        routes: [],
+        points: []
+      }
+
+      // routes
+      const routes = document.querySelectorAll('#route-area li')
+      routes.forEach(route => {
+        const routeData = {
+          duration: Number(route.querySelector('input[name="duration"]').value),
+          distance: Number(route.querySelector('input[name="distance"]').value),
+          mode: Number(route.querySelector('select[name="mode"]').value),
+          coordinates: route.querySelector('textarea[name="route-coordinates"]').value
+        }
+        data.routes.push(routeData)
+      })
+
+      // points
+      const points = document.querySelectorAll('#point-area li')
+      points.forEach(point => {
+        const pointData = {
+          name: point.querySelector('input[name="point-name"]').value,
+          tag: point.querySelector('input[name="point-tag"]').value,
+          coordinates: point.querySelector('textarea[name="point-coordinates"]').value
+        }
+        data.points.push(pointData)
+      })
+
+      postData(data)
+    }
+
+    async function postData(data) {
+      const response = await fetch('/api/save_activity', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      })
+
+      alert(response.status === 200 ? 'Success' : 'Error:' + response.status)
     }
   </script>
 
@@ -194,7 +235,7 @@
       <label>Name: <input type="text" name="point-name"></label>
       <br/><br/>
   
-      <label>Tag: <input type="text" name="tag"></label>
+      <label>Tag: <input type="text" name="point-tag"></label>
       <br/><br/>
   
       <label>Coordinates: 
