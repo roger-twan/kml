@@ -1,4 +1,12 @@
 export default async (request, env) => {
+  const origin = request.headers.get('Origin')
+  const corsHeaders = {}
+  const corsOrigin = ['http://localhost:3000', 'https://https://roger-twan.github.io']
+
+  if (corsOrigin.includes(origin)) {
+    corsHeaders['Access-Control-Allow-Origin'] = origin
+  }
+
   try {
     let result = {
       activities: {},
@@ -40,9 +48,9 @@ export default async (request, env) => {
       })
     }
   
-    return Response.json(result, { status: 200 })
+    return Response.json(result, { status: 200, headers: corsHeaders })
   } catch(e) {
     console.error(e.toString())
-    return new Response(e.toString(), { status: 500 })
+    return new Response(e.toString(), { status: 500, headers: corsHeaders })
   }
 }
