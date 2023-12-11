@@ -3,9 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-		"deploy": "wrangler publish",
-		"dev": "wrangler dev --local"
-	},
+    "deploy": "wrangler publish",
+    "dev": "wrangler dev --local",
+    "init-database": "wrangler d1 execute track-database --file=./init.sql"
+  },
   "devDependencies": {
     "wrangler": "2.15.1"
   },

@@ -32,8 +32,8 @@
   <hr />
 
   <div>
-    <h3>Points</h3>
-    <ul id="point-area"></ul>
+    <h3>Locations</h3>
+    <ul id="location-area"></ul>
   </div>
   <hr />
 
@@ -44,20 +44,24 @@
     async function renderKMLdata() {
       const kmlText = await readFile()
       const kmlData = parseKml(kmlText)
-      const routeData = kmlData.filter(d => d.type === 'route')
-      const pointData = kmlData.filter(d => d.type === 'point')
+      const routeData = kmlData.folder.filter(d => d.type === 'route')
+      const locationData = kmlData.folder.filter(d => d.type === 'location')
 
+      document.querySelector('#title').value = kmlData.title
       routeData.forEach(route => renderRouteData(route))
-      pointData.forEach(point => renderPointData(point))
+      locationData.forEach(location => renderLocationData(location))
     }
 
     function parseKml(text) {
       const parser = new DOMParser()
       const doc = parser.parseFromString(text, 'application/xml')
       const folders = doc.querySelectorAll('Folder')
-      const kmlData = []
+      const kmlData = {
+        title: doc.querySelector('Document').querySelector('name').textContent,
+        folder: []
+      }
 
-      folders.forEach(folder => kmlData.push(getFolderInfo(folder)))
+      folders.forEach(folder => kmlData.folder.push(getFolderInfo(folder)))
       return kmlData
     }
 
@@ -85,14 +89,14 @@
     }
 
     function getFolderInfo(folder) {
-      const points = []
+      const locations = []
       const info = {
         name: folder.querySelector('name').textContent,
-        type: isRoute(folder) ? 'route' : 'point',
+        type: isRoute(folder) ? 'route' : 'location',
         content: ''
       }
 
-      if (info.type === 'point') {
+      if (info.type === 'location') {
         const placemarks = folder.querySelectorAll('Placemark')
         info.content = []
         placemarks.forEach(placemark => {
@@ -134,16 +138,16 @@
       container.appendChild(clone)
     }
 
-    function renderPointData(data) {
-      const container = document.querySelector('#point-area')
-      const template = document.querySelector('#point-template')
+    function renderLocationData(data) {
+      const container = document.querySelector('#location-area')
+      const template = document.querySelector('#location-template')
       
-      data.content.forEach(point => {
+      data.content.forEach(location => {
         const clone = template.content.cloneNode(true)
-        const name = clone.querySelector('input[name="point-name"]')
-        const coordinates = clone.querySelector('textarea[name="point-coordinates"]')
-        name.value = point.name
-        coordinates.value = point.coordinates
+        const name = clone.querySelector('input[name="location-name"]')
+        const coordinates = clone.querySelector('textarea[name="location-coordinates"]')
+        name.value = location.name
+        coordinates.value = location.coordinates
 
         container.appendChild(clone)
       })
@@ -156,7 +160,7 @@
         activity_date: document.querySelector('#date').value,
         activity_link: document.querySelector('#link').value,
         routes: [],
-        points: []
+        locations: []
       }
 
       // routes
@@ -171,15 +175,15 @@
         data.routes.push(routeData)
       })
 
-      // points
-      const points = document.querySelectorAll('#point-area li')
-      points.forEach(point => {
-        const pointData = {
-          name: point.querySelector('input[name="point-name"]').value,
-          tag: point.querySelector('input[name="point-tag"]').value,
-          coordinates: point.querySelector('textarea[name="point-coordinates"]').value
+      // locations
+      const locations = document.querySelectorAll('#location-area li')
+      locations.forEach(location => {
+        const locationData = {
+          name: location.querySelector('input[name="location-name"]').value,
+          tag: location.querySelector('input[name="location-tag"]').value,
+          coordinates: location.querySelector('textarea[name="location-coordinates"]').value
         }
-        data.points.push(pointData)
+        data.locations.push(locationData)
       })
 
       postData(data)
@@ -190,7 +194,7 @@
         method: 'POST',
         body: JSON.stringify(data),
       })
-
+      
       alert(response.status === 200 ? 'Success' : 'Error:' + response.status)
     }
   </script>
@@ -228,18 +232,18 @@
     </li>
   </template>
 
-  <template id="point-template">
+  <template id="location-template">
     <li>
       <p></p>
   
-      <label>Name: <input type="text" name="point-name"></label>
+      <label>Name: <input type="text" name="location-name"></label>
       <br/><br/>
   
-      <label>Tag: <input type="text" name="point-tag"></label>
+      <label>Tag: <input type="text" name="location-tag"></label>
       <br/><br/>
   
       <label>Coordinates: 
-        <textarea name="point-coordinates" cols="30" rows="3"></textarea>
+        <textarea name="location-coordinates" cols="30" rows="3"></textarea>
       </label>
       <br /><br />
 
