@@ -1,5 +1,3 @@
-import { formatDateTime } from '../utils'
-
 export default async (request, env) => {
   try {
     let result = {
