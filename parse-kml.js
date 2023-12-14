@@ -215,12 +215,13 @@ const html = `
   
       <label>Trip Mode: 
         <select name="mode" name="mode">
-          <option value="1">Walking</option>
-          <option value="2">Bicycling</option>
-          <option value="3">Driving</option>
-          <option value="4">flying</option>
-          <option value="5">boating</option>
-          <option value="6">motorcycling</option>
+          <option value="0">Train</option>
+          <option value="1">Walk</option>
+          <option value="2">Bicycle</option>
+          <option value="3">Car</option>
+          <option value="4">Air</option>
+          <option value="5">Ship</option>
+          <option value="6">motorcycle</option>
         </select>
       </label>
       <br/><br/>
