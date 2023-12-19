@@ -206,11 +206,11 @@ const html = `
       <p></p>
   
       <label>Duration: <input type="number" name="duration"></label>
-      (minutes)
+      (hours)
       <br/><br/>
   
       <label>Distance: <input type="number" name="distance"></label>
-      (miles)
+      (kilometers)
       <br/><br/>
   
       <label>Trip Mode: 
