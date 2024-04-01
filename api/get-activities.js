@@ -1,7 +1,7 @@
 export default async (request, env) => {
   const origin = request.headers.get('Origin')
   const corsHeaders = {}
-  const corsOrigin = ['http://localhost:3000', 'https://roger-twan.github.io']
+  const corsOrigin = ['http://localhost:3000', 'https://roger.ink']
 
   if (corsOrigin.includes(origin)) {
     corsHeaders['Access-Control-Allow-Origin'] = origin
